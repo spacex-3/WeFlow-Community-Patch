@@ -20,6 +20,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           upstream_url="https://github.com/AnonymousUser443/WeFlow-Community-Patch.git"
           git remote add upstream "$upstream_url" 2>/dev/null || git remote set-url upstream "$upstream_url"
           git fetch upstream --prune
