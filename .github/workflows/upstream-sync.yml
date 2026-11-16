@@ -1,0 +1,41 @@
+name: Mirror upstream WeFlow patch history
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 3 * * 0"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror upstream without touching main
+        shell: bash
+        run: |
+          set -euo pipefail
+          upstream_url="https://github.com/AnonymousUser443/WeFlow-Community-Patch.git"
+          git remote add upstream "$upstream_url" 2>/dev/null || git remote set-url upstream "$upstream_url"
+          git fetch upstream --prune
+
+          if ! git show-ref --verify --quiet refs/remotes/upstream/main; then
+            echo "Upstream main is unavailable; keeping the fork unchanged."
+            exit 0
+          fi
+
+          upstream_commit="$(git rev-parse upstream/main)"
+          git switch -C upstream-sync upstream/main
+          git push origin upstream-sync --force-with-lease
+          snapshot_tag="upstream-snapshot-${upstream_commit:0:12}"
+          if ! git rev-parse "$snapshot_tag" >/dev/null 2>&1; then
+            git tag -a "$snapshot_tag" "$upstream_commit" -m "Immutable upstream snapshot ${upstream_commit}"
+            git push origin "$snapshot_tag"
+          fi
+
+          git switch main

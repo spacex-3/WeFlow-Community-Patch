@@ -1,5 +1,7 @@
 # WeFlow Community Patch
 
+> This fork keeps its maintainer-owned `main` branch stable. A scheduled GitHub Actions workflow mirrors the original patch repository to `upstream-sync` and creates immutable `upstream-snapshot-*` tags. Upstream changes never overwrite `main` automatically.
+
 面向 WeFlow 5.0.0 的社区热修复，解决 2026 年 10 月 1 日后**启动即报 `-101`（原生库构建过期）**、2026 年 7 月底后聊天记录导出失效、私聊页面首次点击“导出”时卡在“正在准备导出模块”，以及兼容导出中的 `Silk 解码失败`。
 
 > 本仓库不是 WeFlow 官方仓库。补丁基于上游项目 [hicccc77/WeFlow](https://github.com/hicccc77/WeFlow)，仅用于非商业的社区修复与交流。
